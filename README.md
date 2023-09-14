@@ -18,19 +18,29 @@ Add the following to the headers when making an API call
 - Listed below are the query parameters
 ```typescript
 interface QueryParams {
-    page: number, // the page number for pagination
-    pageSize: number, // the number of items per page
-    sortBy: string, // sort the items based on this property
-    sortOrder: "ASC" | "DESC", // sort order
-    priceMin: number, // minimum price to search
-    priceMax: number, // maximum price to search,
-    bedroomMin: number, // minimum amount of bedrooms in a property,
-    bedroomMax: number, // maximum amount of bedrooms in a property,
-    bathroomMin: number, // minimum amount of bathrooms in a property,
-    bathroomMax: number, // maximum amount of bathrooms in a property,
     archived: boolean, // when true, fetch only archived properties
     transaction_ids: Array<number>, // filter the results that have these transaction ids
     type_ids: Array<number>, // filter the results that belong to certain types
+
+    // pagination
+    page: number,
+    pageSize: number,
+
+    // sorting
+    sortBy: string, 
+    sortOrder: "ASC" | "DESC",
+
+    // price range
+    priceMin: number, 
+    priceMax: number,
+
+    // number of bedrooms
+    bedroomMin: number, 
+    bedroomMax: number,
+
+    // number of bathrooms
+    bathroomMin: number,
+    bathroomMax: number,
 }
 ```
 - In order to add query params that are arrays, separate each item with a comma. Example:
