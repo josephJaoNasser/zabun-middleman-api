@@ -19,7 +19,6 @@ module.exports = function (query) {
   const searchParams = {
     filtering: {
       kind,
-      archived,
       public: true,
       price: {
         minimum: +priceMin,
@@ -54,6 +53,10 @@ module.exports = function (query) {
 
   if (query.public == "false") {
     searchParams.filtering.public = false;
+  }
+
+  if (archived == "true") {
+    searchParams.filtering.archived = true;
   }
 
   return searchParams;
