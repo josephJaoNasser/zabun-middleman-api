@@ -22,16 +22,16 @@ module.exports = function (query) {
       archived,
       public: true,
       price: {
-        minimum: priceMin,
-        maximum: priceMax,
+        minimum: +priceMin,
+        maximum: +priceMax,
       },
       bedroom_count: {
-        minimum: bedroomMin,
-        maximum: bedroomMax,
+        minimum: +bedroomMin,
+        maximum: +bedroomMax,
       },
       bathroom_count: {
-        minimum: bathroomMin,
-        maximum: bathroomMax,
+        minimum: +bathroomMin,
+        maximum: +bathroomMax,
       },
     },
     paging: {
