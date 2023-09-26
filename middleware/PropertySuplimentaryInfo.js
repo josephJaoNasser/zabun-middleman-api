@@ -9,7 +9,7 @@ module.exports = async function PropertySuplimentaryInfo(req, res, next) {
   };
 
   /**
-   * Add items here in the results
+   * Add items here depending on what supplimentary info you need
    */
   const supplimentaryItems = [
     "layouts",
@@ -18,6 +18,10 @@ module.exports = async function PropertySuplimentaryInfo(req, res, next) {
     "status",
     "types",
     "environments",
+    "flooding_sensitivities",
+    "heritage_inventorieds",
+    "building_licenses",
+    "garden_directions",
   ];
 
   const results = {};

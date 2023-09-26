@@ -6,6 +6,10 @@ module.exports = function formatPropertyData(property, suplimentaryInfo) {
     status: statusTypes,
     types: propertyTypes,
     environments: environmentTypes,
+    flooding_sensitivities,
+    heritage_inventorieds,
+    building_licenses,
+    garden_directions,
   } = suplimentaryInfo;
 
   // transaction type
@@ -19,6 +23,26 @@ module.exports = function formatPropertyData(property, suplimentaryInfo) {
   // property status
   const status = statusTypes.find(
     (status) => status.id === property.status_id
+  )?.name;
+
+  // heritage inventories
+  const heritage_inventory = heritage_inventorieds.find(
+    (heritage) => heritage.id === property.heritage_inventoried_id
+  )?.name;
+
+  // flooding sensitivity
+  const flooding_sensitivity = flooding_sensitivities.find(
+    (trans) => trans.id === property.transaction_id
+  )?.name;
+
+  // building license
+  const building_license = building_licenses.find(
+    (lic) => lic.id === property.building_license_id
+  )?.name;
+
+  // building license
+  const garden_direction = garden_directions.find(
+    (gd) => gd.id === property.direction_garden_id
   )?.name;
 
   // layouts
@@ -65,5 +89,9 @@ module.exports = function formatPropertyData(property, suplimentaryInfo) {
     layouts: propertyLayouts,
     facilities: propertyFacilities,
     environments: propertyEnvironments,
+    flooding_sensitivity,
+    heritage_inventory,
+    building_license,
+    garden_direction,
   };
 };
