@@ -49,3 +49,45 @@ interface QueryParams {
 ```
 ## /property/{propertyId}
 - gets one property with a certain property ID
+
+## Finding the rooms, layouts, facilities
+### Layouts
+Contains info such as rooms, room types, and room counts as well as which floor they belong to.
+This info can simply be found under products.layouts
+```json
+{
+    "autoid": "1760662",
+    "property_id": 475899,
+    "layout_id": 4,
+    "count": 1, // This is the number of this type of room
+    "surface": 0,
+    "floor": 1, // Probably the floor this room belongs to
+    "creation": "2010-01-05T17:49:07+01:00",
+    "creation_person_id": 1514,
+    "changed": "2012-08-20T11:26:18+02:00",
+    "changed_person_id": 1514,
+    "company_id": 800,
+    "sort": 2,
+    "comment": {
+        "nl": "Open keuken"
+    },
+    "name": {
+        "nl": "Keuken" // name of the room type
+    }
+},
+```
+
+### Facilities
+Contains info such on the kinds of facilities the property offers.
+This info can simply be found under products.facilities
+```json
+{
+    "active": true, // if the facility is active
+    "property_id": 492275,
+    "facility_id": 1,
+    "company_id": 800,
+    "name": {
+        "nl": "Elektriciteit"
+    }
+},
+```
