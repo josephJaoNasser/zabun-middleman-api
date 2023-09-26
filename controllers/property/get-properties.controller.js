@@ -48,7 +48,7 @@ class GetPropertiesController extends WebController {
       const propertyResultsPromise = axios
         .post(ApiUrl + "/property/search", filters, config)
         .then((properties) => {
-          results.properties = properties.data;
+          results.properties = properties.data.properties;
         });
 
       await Promise.all([
@@ -58,7 +58,26 @@ class GetPropertiesController extends WebController {
         propertyTypesPromise,
       ]);
 
-      const properties = results.properties.properties.map((property) => {
+      const singlePropertyPromises = results.properties.map((property) => {
+        return axios
+          .get(ApiUrl + "/property/" + property.property_id, config)
+          .then((res) => {
+            const propertyIndex = results.properties.findIndex(
+              (p) => p.property_id === res.data.property_id
+            );
+
+            if (propertyIndex > -1) {
+              results.properties[propertyIndex] = {
+                ...results.properties[propertyIndex],
+                ...res.data,
+              };
+            }
+          });
+      });
+
+      await Promise.all(singlePropertyPromises);
+
+      const properties = results.properties.map((property) => {
         const transaction = results.transactionTypes.find(
           (trans) => trans.id === property.transaction_id
         )?.name;
@@ -76,7 +95,7 @@ class GetPropertiesController extends WebController {
 
       return res.status(200).json(
         success({
-          ...results.properties,
+          ...results,
           properties,
         })
       );
