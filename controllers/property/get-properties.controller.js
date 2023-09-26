@@ -1,14 +1,19 @@
 const ApiUrl = require("@/constants/ApiUrl");
 const HttpMethod = require("@/constants/HttpMethod");
 const AuthenticationMiddleware = require("@/middleware/AuthenticationMiddleware");
+const PropertySuplimentaryInfo = require("@/middleware/PropertySuplimentaryInfo");
 const filterBuilder = require("@/utils/filterBuilder");
+const formatPropertyData = require("@/utils/formatPropertyData");
 const { failed, getErrorCode, success } = require("@/utils/response");
 const WebController = require("@/www/WebController");
 const { default: axios } = require("axios");
 
 class GetPropertiesController extends WebController {
   constructor() {
-    super("/", HttpMethod.GET, [AuthenticationMiddleware]);
+    super("/", HttpMethod.GET, [
+      AuthenticationMiddleware,
+      PropertySuplimentaryInfo,
+    ]);
   }
 
   async handler(req, res) {
@@ -20,82 +25,43 @@ class GetPropertiesController extends WebController {
         },
       };
 
-      const results = {
-        properties: {},
-        transactionTypes: [],
-        statusTypes: [],
-        propertyTypes: [],
-      };
+      // get al properties
+      const { data: propertiesResponse } = await axios.post(
+        ApiUrl + "/property/search",
+        filters,
+        config
+      );
 
-      const transactionTypesPromise = axios
-        .get(ApiUrl + "/property/transactions", config)
-        .then((transactionTypes) => {
-          results.transactionTypes = transactionTypes.data;
-        });
-
-      const statusTypesPromise = axios
-        .get(ApiUrl + "/property/status", config)
-        .then((statusTypes) => {
-          results.statusTypes = statusTypes.data;
-        });
-
-      const propertyTypesPromise = axios
-        .get(ApiUrl + "/property/types", config)
-        .then((propertyTypes) => {
-          results.propertyTypes = propertyTypes.data;
-        });
-
-      const propertyResultsPromise = axios
-        .post(ApiUrl + "/property/search", filters, config)
-        .then((properties) => {
-          results.properties = properties.data.properties;
-        });
-
-      await Promise.all([
-        propertyResultsPromise,
-        transactionTypesPromise,
-        statusTypesPromise,
-        propertyTypesPromise,
-      ]);
-
-      const singlePropertyPromises = results.properties.map((property) => {
+      // functopm that gets a single property
+      const getSinglePropertyPromise = (property) => {
         return axios
           .get(ApiUrl + "/property/" + property.property_id, config)
           .then((res) => {
-            const propertyIndex = results.properties.findIndex(
+            const propertyIndex = propertiesResponse.properties.findIndex(
               (p) => p.property_id === res.data.property_id
             );
 
             if (propertyIndex > -1) {
-              results.properties[propertyIndex] = {
-                ...results.properties[propertyIndex],
+              propertiesResponse.properties[propertyIndex] = {
+                ...propertiesResponse.properties[propertyIndex],
                 ...res.data,
               };
             }
           });
-      });
+      };
+
+      const singlePropertyPromises = propertiesResponse.properties.map(
+        getSinglePropertyPromise
+      );
 
       await Promise.all(singlePropertyPromises);
 
-      const properties = results.properties.map((property) => {
-        const transaction = results.transactionTypes.find(
-          (trans) => trans.id === property.transaction_id
-        )?.name;
-
-        const type = results.propertyTypes.find(
-          (type) => type.id === property.type_id
-        )?.name;
-
-        const status = results.statusTypes.find(
-          (status) => status.id === property.status_id
-        )?.name;
-
-        return { ...property, transaction, type, status };
-      });
+      const properties = propertiesResponse.properties.map((property) =>
+        formatPropertyData(property, res.locals.propertySuplimentaryInfo)
+      );
 
       return res.status(200).json(
         success({
-          ...results,
           properties,
         })
       );
