@@ -2,7 +2,7 @@
 
 ### Usage
 
-Add the following to the headers when making an API call
+Add the following to the `headers` when making an API call
 ```json
 {
   "client_id": "xxxx",
