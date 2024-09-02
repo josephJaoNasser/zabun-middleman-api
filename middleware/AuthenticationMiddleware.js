@@ -1,3 +1,5 @@
+const { failed } = require("@/utils/response");
+
 module.exports = function AuthenticationMiddleware(req, res, next) {
   const { client_id, server_id, api_key } = req.headers;
   const bedrijf = req.headers["x-client-id"];

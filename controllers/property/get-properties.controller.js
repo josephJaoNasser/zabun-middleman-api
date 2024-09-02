@@ -32,7 +32,7 @@ class GetPropertiesController extends WebController {
         config
       );
 
-      // functopm that gets a single property
+      // function that gets a single property
       const getSinglePropertyPromise = (property) => {
         return axios
           .get(ApiUrl + "/property/" + property.property_id, config)
