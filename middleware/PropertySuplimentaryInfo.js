@@ -22,6 +22,7 @@ module.exports = async function PropertySuplimentaryInfo(req, res, next) {
     "heritage_inventorieds",
     "building_licenses",
     "garden_directions",
+    "extra_fields",
   ];
 
   const results = {};
